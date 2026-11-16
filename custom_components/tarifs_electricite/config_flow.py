@@ -30,19 +30,19 @@ def _price_schema(current: dict) -> vol.Schema:
         {
             vol.Required(CONF_PRICE_HP, default=float(current.get(CONF_PRICE_HP, DEFAULT_PRICE_HP))):
                 selector.NumberSelector(selector.NumberSelectorConfig(
-                    min=0, max=MAX_PRICE, step=0.0001,
+                    min=0, max=MAX_PRICE, step="any",
                     mode=selector.NumberSelectorMode.BOX,
                     unit_of_measurement="EUR/kWh",
                 )),
             vol.Required(CONF_PRICE_HC, default=float(current.get(CONF_PRICE_HC, DEFAULT_PRICE_HC))):
                 selector.NumberSelector(selector.NumberSelectorConfig(
-                    min=0, max=MAX_PRICE, step=0.0001,
+                    min=0, max=MAX_PRICE, step="any",
                     mode=selector.NumberSelectorMode.BOX,
                     unit_of_measurement="EUR/kWh",
                 )),
             vol.Required(CONF_EXPORT_PRICE, default=float(current.get(CONF_EXPORT_PRICE, DEFAULT_EXPORT_PRICE))):
                 selector.NumberSelector(selector.NumberSelectorConfig(
-                    min=0, max=MAX_PRICE, step=0.0001,
+                    min=0, max=MAX_PRICE, step="any",
                     mode=selector.NumberSelectorMode.BOX,
                     unit_of_measurement="EUR/kWh",
                 )),
