@@ -15,6 +15,7 @@ from homeassistant.helpers import selector
 from .const import (
     CONF_DAYS, CONF_END, CONF_EXPORT_PRICE, CONF_MODE, CONF_PERIOD_INDEX,
     CONF_PERIODS, CONF_PRICE_HC, CONF_PRICE_HP, CONF_START, CONF_TIMEZONE,
+    CONF_SATURDAY_FULL_DAY, CONF_SUNDAY_FULL_DAY,
     DEFAULT_EXPORT_PRICE, DEFAULT_PRICE_HC, DEFAULT_PRICE_HP, DOMAIN,
     MAX_PRICE, MAX_RULES, MODE_AUTO, NAME, WEEKDAYS_FR,
 )
@@ -25,7 +26,7 @@ from .schedule import (
 
 
 def _price_schema(current: dict) -> vol.Schema:
-    """Form schema; prices use a visible four-decimal-capable entry box."""
+    """Form schema; use arbitrary precision (HA number selector min step is 0.001)."""
     return vol.Schema(
         {
             vol.Required(CONF_PRICE_HP, default=float(current.get(CONF_PRICE_HP, DEFAULT_PRICE_HP))):
@@ -50,6 +51,16 @@ def _price_schema(current: dict) -> vol.Schema:
                 selector.TextSelector(),
         }
     )
+
+
+def _weekend_schema(current: dict) -> vol.Schema:
+    """Two independent switches for Saturday and Sunday, 00:00-24:00 local."""
+    return vol.Schema({
+        vol.Required(CONF_SATURDAY_FULL_DAY, default=current.get(CONF_SATURDAY_FULL_DAY, False)):
+            selector.BooleanSelector(),
+        vol.Required(CONF_SUNDAY_FULL_DAY, default=current.get(CONF_SUNDAY_FULL_DAY, False)):
+            selector.BooleanSelector(),
+    })
 
 
 def _rule_schema(rule: dict | None = None) -> vol.Schema:
@@ -105,7 +116,7 @@ class ScheduleWizard:
 
     async def async_step_schedule(self, user_input: dict | None = None) -> ConfigFlowResult:
         """Menu to add, edit and delete any of up to four starts per day."""
-        options = ["prices"]
+        options = ["prices", "weekend"]
         if len(self._draft[CONF_PERIODS]) < MAX_RULES:
             options.append("add_period")
         if self._draft[CONF_PERIODS]:
@@ -124,6 +135,16 @@ class ScheduleWizard:
                 return await self.async_step_schedule()
         return self.async_show_form(
             step_id="prices", data_schema=_price_schema(self._draft), errors=errors
+        )
+
+    async def async_step_weekend(self, user_input: dict | None = None) -> ConfigFlowResult:
+        """Allow a full Saturday and/or Sunday without creating timed rules."""
+        if user_input is not None:
+            self._draft[CONF_SATURDAY_FULL_DAY] = user_input[CONF_SATURDAY_FULL_DAY]
+            self._draft[CONF_SUNDAY_FULL_DAY] = user_input[CONF_SUNDAY_FULL_DAY]
+            return await self.async_step_schedule()
+        return self.async_show_form(
+            step_id="weekend", data_schema=_weekend_schema(self._draft)
         )
 
     async def async_step_add_period(self, user_input: dict | None = None) -> ConfigFlowResult:
@@ -204,6 +225,8 @@ class TarifsElectriciteConfigFlow(ScheduleWizard, config_entries.ConfigFlow, dom
                     **prices,
                     CONF_PERIODS: [],
                     CONF_MODE: MODE_AUTO,
+                    CONF_SATURDAY_FULL_DAY: False,
+                    CONF_SUNDAY_FULL_DAY: False,
                 }
                 return await self.async_step_schedule()
         return self.async_show_form(
@@ -238,6 +261,8 @@ class TarifsElectriciteOptionsFlow(ScheduleWizard, config_entries.OptionsFlow):
         self._draft.setdefault(CONF_PERIODS, [])
         self._draft.setdefault(CONF_MODE, MODE_AUTO)
         self._draft.setdefault(CONF_EXPORT_PRICE, DEFAULT_EXPORT_PRICE)
+        self._draft.setdefault(CONF_SATURDAY_FULL_DAY, False)
+        self._draft.setdefault(CONF_SUNDAY_FULL_DAY, False)
         self._draft.setdefault(CONF_TIMEZONE, self.hass.config.time_zone or "Europe/Paris")
         return await self.async_step_schedule()
 

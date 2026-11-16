@@ -13,6 +13,8 @@ CONF_END = "end"
 CONF_DAYS = "days"
 CONF_MODE = "mode"
 CONF_PERIOD_INDEX = "period_index"
+CONF_SATURDAY_FULL_DAY = "saturday_full_day_hc"
+CONF_SUNDAY_FULL_DAY = "sunday_full_day_hc"
 
 MODE_AUTO = "automatique"
 MODE_HP = "hp_force"

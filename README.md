@@ -2,12 +2,13 @@
 
 Intégration personnalisée **entièrement locale** pour gérer les tarifs d'électricité en heures pleines (HP) et heures creuses (HC), avec programmation hebdomadaire, mode forcé, interface de configuration et prix pour le tableau de bord Énergie.
 
-> **Version :** 1.0.0 · **Domaine :** `tarifs_electricite` · **Home Assistant :** versions modernes (2025.1+ visées). La suite de tests valide le moteur horaire ; l'intégration complète doit encore être essayée dans une instance Home Assistant réelle.
+> **Version :** 1.0.2 · **Domaine :** `tarifs_electricite` · **Home Assistant :** versions modernes (2025.1+ visées). La suite de tests valide le moteur horaire ; l'intégration complète doit encore être essayée dans une instance Home Assistant réelle.
 
 ## Fonctionnalités
 
 - Tarifs HP et HC en EUR/kWh, persistants, avec **quatre décimales**.
 - Jusqu'à **4 plages HC commençant par jour**, réparties sur un maximum de 28 règles hebdomadaires. Une même plage peut être assignée à plusieurs jours.
+- **Samedi et dimanche en HC sur 24 heures**, avec deux interrupteurs indépendants dans la configuration (pas besoin de créer une plage `00:00 → 00:00`).
 - Création, modification, suppression de plages depuis **Configurer** (assistant graphique) ; prix et fuseau éditables sans YAML.
 - Plages traversant minuit, règle dimanche→lundi, fuseau IANA (par défaut celui de Home Assistant), heures été/hiver.
 - Évaluation immédiate au démarrage ; programmation native d'**un seul prochain changement** (pas de polling ni boucle permanente).
@@ -62,8 +63,13 @@ Dans le menu **Gestion des plages horaires** :
 - **Ajouter une plage HC** : choisissez un début, une fin et les jours de semaine.
 - **Modifier une plage HC** : sélectionnez une plage existante, modifiez-la, puis validez.
 - **Supprimer une plage HC** : sélectionnez une plage existante pour la retirer.
+- **Samedi et dimanche en HC 24 h** : cochez **Samedi : heures creuses 24 h** et/ou **Dimanche : heures creuses 24 h**. Les journées entières sont en HC de minuit à minuit, même au passage à l'heure d'été ou d'hiver. Les plages horaires ne changent pas.
 - **Modifier les prix et le fuseau** : revient aux prix, puis au menu.
 - **Terminer et enregistrer** : enregistre les modifications et réactualise immédiatement les capteurs, sans redémarrage.
+
+**Exemple week-end :** activez les deux interrupteurs **Samedi** et **Dimanche** dans le menu. Samedi à `00:00`, le tarif passe en HC et y reste jusqu'au lundi `00:00`, sauf si une plage HC habituelle prolonge déjà les heures creuses sur le lundi. Si vous activez seulement le samedi, le tarif repasse au régime du dimanche à minuit.
+
+Les journées complètes ne consomment aucune des 4 plages horaires autorisées par jour. Si des plages existantes chevauchent un jour entier en HC, elles sont fusionnées logiquement (toujours HC), sans bascule inutile. Les chevauchements **entre plages horaires configurées** restent interdits.
 
 **Exemple :** ajoutez `22:30 → 06:30` et `12:30 → 14:30`, en cochant lundi à dimanche pour chaque plage. La période `22:30 → 06:30` commence le jour coché et se poursuit le lendemain matin. Une plage de dimanche soir comprend donc le lundi matin.
 
@@ -98,7 +104,7 @@ Le mode reste forcé jusqu'au retour manuel à `Automatique`, même après redé
 | `sensor.prochain_changement_tarif` | Horodatage | Prochaine modification effective ; inconnu si mode forcé ou absence de transition |
 | `sensor.prix_kwh_heures_pleines` | Prix, `EUR/kWh` | Prix HP configuré |
 | `sensor.prix_kwh_heures_creuses` | Prix, `EUR/kWh` | Prix HC configuré |
-| `sensor.horaires_heures_creuses` | Texte + attributs | Nombre et description des plages ; fuseau horaire |
+| `sensor.horaires_heures_creuses` | Texte + attributs | Nombre de plages, jours entiers HC (`samedi_24h_hc`, `dimanche_24h_hc`), fuseau horaire |
 | `sensor.prix_revente_surplus` | Prix, `EUR/kWh` | Prix de revente du surplus solaire |
 | `number.tarif_hp` | Boîte numérique | Modifie HP directement |
 | `number.tarif_hc` | Boîte numérique | Modifie HC directement |
@@ -159,13 +165,14 @@ Pour revenir au mode automatique, utilisez `mode: automatique`. Pour imposer les
 
 ## Vérifications manuelles dans Home Assistant
 
-1. Avec `22:30–06:30`, `12:30–14:30` et les 7 jours sélectionnés, regardez `sensor.periode_tarifaire` : il doit correspondre à l'heure courante.
-2. Changez `number.tarif_hp` dans le tableau de bord : le capteur de prix actuel doit se mettre à jour immédiatement **si le mode appliqué est HP**.
-3. Passez `select.mode_tarifaire` à `HC forcé` : période = `Heures Creuses`, prix actuel = HC, prochain changement = `unknown` (pas de changement automatique).
-4. Redémarrez Home Assistant : le mode et les prix forcés doivent être conservés.
-5. Remettez `Automatique` : la période suit de nouveau le calendrier ; le prochain changement s'affiche.
-6. Modifiez une plage dans **Configurer**, enregistrez, et vérifiez les attributs de `sensor.horaires_heures_creuses`.
-7. Vérifiez que les entités d'import et d'export du réseau sont bien distinctes dans Énergie.
+1. Dans **Configurer → Samedi et dimanche en HC 24 h**, activez les deux jours et **Terminer et enregistrer**. Vérifiez `sensor.horaires_heures_creuses` et ses attributs `samedi_24h_hc`, `dimanche_24h_hc`.
+2. Avec `22:30–06:30`, `12:30–14:30` et les 7 jours sélectionnés, regardez `sensor.periode_tarifaire` : il doit correspondre à l'heure courante.
+3. Changez `number.tarif_hp` dans le tableau de bord : le capteur de prix actuel doit se mettre à jour immédiatement **si le mode appliqué est HP**.
+4. Passez `select.mode_tarifaire` à `HC forcé` : période = `Heures Creuses`, prix actuel = HC, prochain changement = `unknown` (pas de changement automatique).
+5. Redémarrez Home Assistant : le mode et les prix forcés doivent être conservés.
+6. Remettez `Automatique` : la période suit de nouveau le calendrier ; le prochain changement s'affiche.
+7. Modifiez une plage dans **Configurer**, enregistrez, et vérifiez les attributs de `sensor.horaires_heures_creuses`.
+8. Vérifiez que les entités d'import et d'export du réseau sont bien distinctes dans Énergie.
 
 ## Tests automatisés
 
@@ -176,7 +183,7 @@ python -m pip install pytest
 python -m pytest -q
 ```
 
-Les **25 tests** couvrent prix et validations, plages adjacentes et chevauchantes, passages minuit et dimanche/lundi, quota de 4 plages par jour, calendrier hebdomadaire et changements d'heure été/hiver.
+Les tests automatisés couvrent prix et validations, plages adjacentes et chevauchantes, passages minuit et dimanche/lundi, quota de 4 plages par jour, calendrier hebdomadaire et changements d'heure été/hiver.
 
 > Le passage de ces tests ne garantit pas à lui seul que chaque écran de configuration Home Assistant ou chaque opération du Marketplace fonctionne avec votre version exacte. Testez l'installation et les actions ci-dessus avant un déploiement de production.
 
@@ -222,3 +229,17 @@ README.md
 - Pas de récupération automatique des tarifs fournisseur : ceux-ci sont **saisis manuellement**.
 
 Licence : MIT (voir `LICENSE`).
+
+## Correctif 1.0.1 — échec du flux de configuration (HTTP 400)
+
+La version 1.0.0 utilisait un pas `0.0001` dans les trois sélecteurs numériques du formulaire. Home Assistant rejette les pas numériques inférieurs à `0.001` et ne peut pas ouvrir l'assistant de configuration. La version 1.0.1 utilise `step: any` en mode saisie, tout en continuant à valider et sauvegarder les prix à **quatre décimales** (`normalize_price`).
+
+Pour mettre à jour : remplacer les fichiers du dépôt GitHub par ceux de cette archive, publier les changements, demander la mise à jour dans Marketplace puis **redémarrer Home Assistant Core**. Sans Marketplace : remplacer `custom_components/tarifs_electricite/` par le dossier du ZIP d'installation, puis redémarrer Home Assistant.
+
+Cette correction a été vérifiée par inspection du code du sélecteur de Home Assistant et par les tests statiques et horaires du dépôt. Une vérification en instance Home Assistant reste nécessaire.
+
+## Nouveauté 1.0.2 — samedi et dimanche HC 24 h
+
+Dans **Paramètres → Appareils et services → Tarifs Électricité HP/HC → Configurer → Samedi et dimanche en HC 24 h** : activez l'un, l'autre ou les deux, puis **Terminer et enregistrer**. Cette option est persistante et fonctionne sans règle horaire. Si les deux sont activés, la période est HC en continu du samedi 00:00 jusqu'au lundi 00:00 (sauf autres plages HC qui se poursuivraient le lundi). Le comportement sur les passages à minuit et les changements d'heure est couvert par des tests.
+
+Pour mettre à jour via GitHub/Marketplace, remplacez les fichiers du dépôt par le contenu de l'archive v1.0.2, publiez puis relancez la mise à jour dans Marketplace. Redémarrez Home Assistant Core pour charger le nouveau code, les nouvelles traductions et les nouveaux formulaires. Vos options et votre mode forcé existants sont conservés.

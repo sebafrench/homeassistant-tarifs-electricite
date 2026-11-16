@@ -17,7 +17,8 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     CONF_EXPORT_PRICE, CONF_MODE, CONF_PERIODS, CONF_PRICE_HC, CONF_PRICE_HP,
-    CONF_TIMEZONE, DEFAULT_EXPORT_PRICE, DOMAIN, MAX_PRICE, MODE_AUTO,
+    CONF_TIMEZONE, CONF_SATURDAY_FULL_DAY, CONF_SUNDAY_FULL_DAY,
+    DEFAULT_EXPORT_PRICE, DOMAIN, MAX_PRICE, MODE_AUTO,
     MODE_HC, MODE_HP, MODES, PERIOD_HC, PERIOD_HP, PLATFORMS,
     SERVICE_SET_MODE, SERVICE_SET_PRICE_HC, SERVICE_SET_PRICE_HP,
     SIGNAL_UPDATE,
@@ -63,6 +64,14 @@ class TariffRuntime:
     def price(self, key: str) -> float:
         return float(self.settings[key])
 
+    @property
+    def full_day_hc(self) -> frozenset[int]:
+        """Full-day HC weekdays, Monday=0, Saturday=5, Sunday=6."""
+        return frozenset(
+            day for day, key in ((5, CONF_SATURDAY_FULL_DAY), (6, CONF_SUNDAY_FULL_DAY))
+            if self.settings.get(key, False)
+        )
+
     @callback
     def apply_settings(self) -> None:
         """Synchronize immediately after load or any persisted options update."""
@@ -70,6 +79,8 @@ class TariffRuntime:
         data.update(self.entry.options)
         data.setdefault(CONF_MODE, MODE_AUTO)
         data.setdefault(CONF_EXPORT_PRICE, DEFAULT_EXPORT_PRICE)
+        data.setdefault(CONF_SATURDAY_FULL_DAY, False)
+        data.setdefault(CONF_SUNDAY_FULL_DAY, False)
         data[CONF_PERIODS] = validate_rules(data.get(CONF_PERIODS, []))
         self.settings = data
         self.refresh()
@@ -88,7 +99,9 @@ class TariffRuntime:
         elif self.mode == MODE_HC:
             is_hc = True
         else:
-            is_hc = is_heure_creuse(self.settings[CONF_PERIODS], local_now)
+            is_hc = is_heure_creuse(
+                self.settings[CONF_PERIODS], local_now, self.full_day_hc
+            )
 
         self.period = PERIOD_HC if is_hc else PERIOD_HP
         key = CONF_PRICE_HC if is_hc else CONF_PRICE_HP
@@ -97,7 +110,8 @@ class TariffRuntime:
 
         if self.mode == MODE_AUTO:
             self.next_change = next_tariff_transition(
-                self.settings[CONF_PERIODS], self.timezone, now_utc
+                self.settings[CONF_PERIODS], self.timezone, now_utc,
+                self.full_day_hc,
             )
             if self.next_change is not None:
                 self._unsubscribe_timer = async_track_point_in_utc_time(

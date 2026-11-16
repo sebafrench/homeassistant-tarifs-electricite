@@ -17,6 +17,7 @@
         "description": "Chaque jour sélectionné correspond au jour où la plage commence. Choisissez « Terminer » pour enregistrer les changements.",
         "menu_options": {
           "prices": "Modifier les prix et le fuseau",
+          "weekend": "Samedi et dimanche en HC 24 h",
           "add_period": "Ajouter une plage HC",
           "edit_period": "Modifier une plage HC",
           "remove_period": "Supprimer une plage HC",
@@ -59,6 +60,14 @@
         "title": "Supprimer une plage HC",
         "data": {
           "period_index": "Plage à supprimer"
+        }
+      },
+      "weekend": {
+        "title": "Heures creuses tout le week-end",
+        "description": "Chaque option couvre le jour entier, de 00:00 à 00:00 le lendemain, même lors du changement d’heure. Vous pouvez activer samedi et dimanche indépendamment. Les plages horaires habituelles restent actives.",
+        "data": {
+          "saturday_full_day_hc": "Samedi : heures creuses 24 h",
+          "sunday_full_day_hc": "Dimanche : heures creuses 24 h"
         }
       }
     },
@@ -88,6 +97,7 @@
         "description": "Chaque jour sélectionné correspond au jour où la plage commence. Choisissez « Terminer » pour enregistrer les changements.",
         "menu_options": {
           "prices": "Modifier les prix et le fuseau",
+          "weekend": "Samedi et dimanche en HC 24 h",
           "add_period": "Ajouter une plage HC",
           "edit_period": "Modifier une plage HC",
           "remove_period": "Supprimer une plage HC",
@@ -130,6 +140,14 @@
         "title": "Supprimer une plage HC",
         "data": {
           "period_index": "Plage à supprimer"
+        }
+      },
+      "weekend": {
+        "title": "Heures creuses tout le week-end",
+        "description": "Chaque option couvre le jour entier, de 00:00 à 00:00 le lendemain, même lors du changement d’heure. Vous pouvez activer samedi et dimanche indépendamment. Les plages horaires habituelles restent actives.",
+        "data": {
+          "saturday_full_day_hc": "Samedi : heures creuses 24 h",
+          "sunday_full_day_hc": "Dimanche : heures creuses 24 h"
         }
       }
     },

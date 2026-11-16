@@ -114,9 +114,18 @@ def validate_rules(rules: list[dict]) -> list[dict]:
     return normalized
 
 
-def is_heure_creuse(rules: list[dict], local_now: datetime) -> bool:
-    """Evaluate local civil time, including cross-midnight weekday ownership."""
+def is_heure_creuse(
+    rules: list[dict], local_now: datetime, full_day_hc: frozenset[int] = frozenset()
+) -> bool:
+    """Evaluate rules plus days designated HC from 00:00 inclusive to next 00:00.
+
+    Full-day settings are independent of the 4 ordinary periods per day. They
+    form the union with periods, so an existing HC period never switches back
+    to HP in the middle of a selected full-day date.
+    """
     day = local_now.weekday()
+    if day in full_day_hc:
+        return True
     minute = local_now.hour * 60 + local_now.minute
     previous_day = (day - 1) % 7
     for rule in rules:
@@ -134,7 +143,8 @@ def is_heure_creuse(rules: list[dict], local_now: datetime) -> bool:
 
 
 def next_tariff_transition(
-    rules: list[dict], tz_name: str, now_utc: datetime
+    rules: list[dict], tz_name: str, now_utc: datetime,
+    full_day_hc: frozenset[int] = frozenset(),
 ) -> datetime | None:
     """Return the next ACTUAL state change in UTC (or None if always same).
 
@@ -145,14 +155,14 @@ def next_tariff_transition(
     """
     if now_utc.tzinfo is None:
         raise ValueError("now_utc must be timezone-aware")
-    if not rules:
+    if not rules and not full_day_hc:
         return None
     utc_now = now_utc.astimezone(timezone.utc)
     tz = ZoneInfo(tz_name)
-    old_state = is_heure_creuse(rules, utc_now.astimezone(tz))
+    old_state = is_heure_creuse(rules, utc_now.astimezone(tz), full_day_hc)
     instant = utc_now.replace(second=0, microsecond=0) + timedelta(minutes=1)
     for _ in range(MINUTES_PER_WEEK + 2 * MINUTES_PER_DAY + 1):
-        state = is_heure_creuse(rules, instant.astimezone(tz))
+        state = is_heure_creuse(rules, instant.astimezone(tz), full_day_hc)
         if state != old_state:
             return instant
         instant += timedelta(minutes=1)

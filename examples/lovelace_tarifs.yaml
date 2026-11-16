@@ -38,9 +38,14 @@ views:
         content: >
           **Fuseau :** {{ state_attr('sensor.horaires_heures_creuses', 'fuseau_horaire') or 'non configuré' }}
 
+          {% set jours_entiers = state_attr('sensor.horaires_heures_creuses', 'jours_entiers_hc') or [] %}
+          {% if jours_entiers %}
+          **Jours entièrement en HC :** {{ jours_entiers | join(', ') }} (00:00 → 00:00 lendemain)
+          {% endif %}
+
           {% set plages = state_attr('sensor.horaires_heures_creuses', 'plages') or [] %}
           {% if plages | length == 0 %}
-          Aucune plage HC définie. Le tarif HP s'applique en automatique.
+          Aucune plage HC horaire définie.{% if not jours_entiers %} Le tarif HP s'applique en automatique.{% else %} Les jours entiers en HC restent actifs.{% endif %}
           {% else %}
           {% for plage in plages %}
           - **{{ plage.jours }}** : {{ plage.debut }} → {{ plage.fin }}{% if plage.traverse_minuit %} (lendemain){% endif %}

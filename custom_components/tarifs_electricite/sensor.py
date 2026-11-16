@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     CONF_DAYS, CONF_END, CONF_EXPORT_PRICE, CONF_PERIODS,
     CONF_PRICE_HC, CONF_PRICE_HP, CONF_START, DOMAIN, WEEKDAYS_FR,
+    CONF_SATURDAY_FULL_DAY, CONF_SUNDAY_FULL_DAY,
 )
 from . import TariffRuntime
 
@@ -65,13 +66,18 @@ class TariffSensor(SensorEntity):
             return self.runtime.price(CONF_PRICE_HC)
         if self.key == "export":
             return self.runtime.price(CONF_EXPORT_PRICE)
-        return f"{len(self.runtime.settings[CONF_PERIODS])} plages"
+        total = len(self.runtime.settings[CONF_PERIODS])
+        days = len(self.runtime.full_day_hc)
+        return f"{total} plages · {days} jours 24 h HC" if days else f"{total} plages"
 
     @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
         if self.key == "schedule":
             return {
                 "fuseau_horaire": self.runtime.timezone,
+                "samedi_24h_hc": self.runtime.settings.get(CONF_SATURDAY_FULL_DAY, False),
+                "dimanche_24h_hc": self.runtime.settings.get(CONF_SUNDAY_FULL_DAY, False),
+                "jours_entiers_hc": [WEEKDAYS_FR[day] for day in sorted(self.runtime.full_day_hc)],
                 "plages": [
                     {
                         "debut": rule[CONF_START],

@@ -17,6 +17,7 @@
         "description": "Selected weekdays refer to the day an interval starts. Choose Finish to save changes.",
         "menu_options": {
           "prices": "Edit prices and time zone",
+          "weekend": "Full-day weekend off-peak",
           "add_period": "Add an off-peak interval",
           "edit_period": "Edit an off-peak interval",
           "remove_period": "Delete an off-peak interval",
@@ -59,6 +60,14 @@
         "title": "Delete off-peak interval",
         "data": {
           "period_index": "Interval to remove"
+        }
+      },
+      "weekend": {
+        "title": "Full-day weekend off-peak",
+        "description": "Each option covers the whole selected local day, from 00:00 to next midnight, including daylight-saving changes. Saturday and Sunday can be enabled independently. Existing timed intervals remain active.",
+        "data": {
+          "saturday_full_day_hc": "Saturday: off-peak for 24 hours",
+          "sunday_full_day_hc": "Sunday: off-peak for 24 hours"
         }
       }
     },
@@ -88,6 +97,7 @@
         "description": "Selected weekdays refer to the day an interval starts. Choose Finish to save changes.",
         "menu_options": {
           "prices": "Edit prices and time zone",
+          "weekend": "Full-day weekend off-peak",
           "add_period": "Add an off-peak interval",
           "edit_period": "Edit an off-peak interval",
           "remove_period": "Delete an off-peak interval",
@@ -130,6 +140,14 @@
         "title": "Delete off-peak interval",
         "data": {
           "period_index": "Interval to remove"
+        }
+      },
+      "weekend": {
+        "title": "Full-day weekend off-peak",
+        "description": "Each option covers the whole selected local day, from 00:00 to next midnight, including daylight-saving changes. Saturday and Sunday can be enabled independently. Existing timed intervals remain active.",
+        "data": {
+          "saturday_full_day_hc": "Saturday: off-peak for 24 hours",
+          "sunday_full_day_hc": "Sunday: off-peak for 24 hours"
         }
       }
     },
