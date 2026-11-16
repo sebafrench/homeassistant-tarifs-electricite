@@ -1,0 +1,180 @@
+{
+  "title": "Tarifs Électricité HP/HC",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Tarifs Électricité HP/HC",
+        "description": "Définissez les prix, puis ajoutez les plages HC. Aucune API ni connexion Internet nécessaire.",
+        "data": {
+          "price_hp": "Prix HP (€/kWh)",
+          "price_hc": "Prix HC (€/kWh)",
+          "export_price": "Revente du surplus solaire (€/kWh)",
+          "timezone": "Fuseau horaire IANA (ex. Europe/Paris)"
+        }
+      },
+      "schedule": {
+        "title": "Gestion des plages horaires",
+        "description": "Chaque jour sélectionné correspond au jour où la plage commence. Choisissez « Terminer » pour enregistrer les changements.",
+        "menu_options": {
+          "prices": "Modifier les prix et le fuseau",
+          "add_period": "Ajouter une plage HC",
+          "edit_period": "Modifier une plage HC",
+          "remove_period": "Supprimer une plage HC",
+          "finish": "Terminer et enregistrer"
+        }
+      },
+      "prices": {
+        "title": "Prix et fuseau horaire",
+        "data": {
+          "price_hp": "Prix HP (€/kWh)",
+          "price_hc": "Prix HC (€/kWh)",
+          "export_price": "Revente du surplus solaire (€/kWh)",
+          "timezone": "Fuseau horaire IANA (ex. Europe/Paris)"
+        }
+      },
+      "add_period": {
+        "title": "Ajouter une plage HC",
+        "description": "Une plage qui traverse minuit s'étend au lendemain du jour choisi.",
+        "data": {
+          "start": "Début de plage HC",
+          "end": "Fin de plage HC",
+          "days": "Jours de début de la plage"
+        }
+      },
+      "edit_period": {
+        "title": "Choisir une plage à modifier",
+        "data": {
+          "period_index": "Plage horaire"
+        }
+      },
+      "change_period": {
+        "title": "Modifier la plage HC",
+        "data": {
+          "start": "Début de plage HC",
+          "end": "Fin de plage HC",
+          "days": "Jours de début de la plage"
+        }
+      },
+      "remove_period": {
+        "title": "Supprimer une plage HC",
+        "data": {
+          "period_index": "Plage à supprimer"
+        }
+      }
+    },
+    "error": {
+      "invalid_price": "Prix invalide : entre 0 et 10 €/kWh.",
+      "invalid_timezone": "Fuseau horaire IANA inconnu.",
+      "invalid_period": "Plage horaire invalide.",
+      "invalid_time": "Horaire invalide. Utilisez une précision à la minute.",
+      "same_times": "Début et fin doivent être différents.",
+      "invalid_days": "Sélectionnez au moins un jour.",
+      "too_many_periods": "Nombre maximal de règles atteint (28).",
+      "too_many_periods_per_day": "Maximum 4 plages débutant le même jour.",
+      "overlapping_period": "Les plages se chevauchent, y compris à travers minuit."
+    },
+    "abort": {
+      "single_instance_allowed": "Cette intégration est déjà installée.",
+      "already_configured": "Déjà configuré."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Modifier les tarifs"
+      },
+      "schedule": {
+        "title": "Gestion des plages horaires",
+        "description": "Chaque jour sélectionné correspond au jour où la plage commence. Choisissez « Terminer » pour enregistrer les changements.",
+        "menu_options": {
+          "prices": "Modifier les prix et le fuseau",
+          "add_period": "Ajouter une plage HC",
+          "edit_period": "Modifier une plage HC",
+          "remove_period": "Supprimer une plage HC",
+          "finish": "Terminer et enregistrer"
+        }
+      },
+      "prices": {
+        "title": "Prix et fuseau horaire",
+        "data": {
+          "price_hp": "Prix HP (€/kWh)",
+          "price_hc": "Prix HC (€/kWh)",
+          "export_price": "Revente du surplus solaire (€/kWh)",
+          "timezone": "Fuseau horaire IANA (ex. Europe/Paris)"
+        }
+      },
+      "add_period": {
+        "title": "Ajouter une plage HC",
+        "description": "Une plage qui traverse minuit s'étend au lendemain du jour choisi.",
+        "data": {
+          "start": "Début de plage HC",
+          "end": "Fin de plage HC",
+          "days": "Jours de début de la plage"
+        }
+      },
+      "edit_period": {
+        "title": "Choisir une plage à modifier",
+        "data": {
+          "period_index": "Plage horaire"
+        }
+      },
+      "change_period": {
+        "title": "Modifier la plage HC",
+        "data": {
+          "start": "Début de plage HC",
+          "end": "Fin de plage HC",
+          "days": "Jours de début de la plage"
+        }
+      },
+      "remove_period": {
+        "title": "Supprimer une plage HC",
+        "data": {
+          "period_index": "Plage à supprimer"
+        }
+      }
+    },
+    "error": {
+      "invalid_price": "Prix invalide : entre 0 et 10 €/kWh.",
+      "invalid_timezone": "Fuseau horaire IANA inconnu.",
+      "invalid_period": "Plage horaire invalide.",
+      "invalid_time": "Horaire invalide. Utilisez une précision à la minute.",
+      "same_times": "Début et fin doivent être différents.",
+      "invalid_days": "Sélectionnez au moins un jour.",
+      "too_many_periods": "Nombre maximal de règles atteint (28).",
+      "too_many_periods_per_day": "Maximum 4 plages débutant le même jour.",
+      "overlapping_period": "Les plages se chevauchent, y compris à travers minuit."
+    }
+  },
+  "services": {
+    "set_prix_hp": {
+      "name": "Modifier le tarif HP",
+      "description": "Enregistre et applique immédiatement le nouveau tarif HP.",
+      "fields": {
+        "prix": {
+          "name": "Prix HP",
+          "description": "Prix en EUR/kWh."
+        }
+      }
+    },
+    "set_prix_hc": {
+      "name": "Modifier le tarif HC",
+      "description": "Enregistre et applique immédiatement le nouveau tarif HC.",
+      "fields": {
+        "prix": {
+          "name": "Prix HC",
+          "description": "Prix en EUR/kWh."
+        }
+      }
+    },
+    "set_mode": {
+      "name": "Forcer le mode tarifaire",
+      "description": "Automatique, HP forcé ou HC forcé ; le choix est conservé au redémarrage.",
+      "fields": {
+        "mode": {
+          "name": "Mode",
+          "description": "automatique, hp_force, hc_force"
+        }
+      }
+    }
+  }
+}

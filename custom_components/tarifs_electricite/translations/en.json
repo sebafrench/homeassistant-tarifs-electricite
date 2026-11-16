@@ -1,0 +1,180 @@
+{
+  "title": "Electricity Peak/Off-Peak Tariffs",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Electricity peak/off-peak prices",
+        "description": "Set the prices, then add off-peak intervals. No external API or internet required.",
+        "data": {
+          "price_hp": "Peak price (EUR/kWh)",
+          "price_hc": "Off-peak price (EUR/kWh)",
+          "export_price": "Solar surplus export price (EUR/kWh)",
+          "timezone": "IANA time zone (e.g. Europe/Paris)"
+        }
+      },
+      "schedule": {
+        "title": "Manage tariff intervals",
+        "description": "Selected weekdays refer to the day an interval starts. Choose Finish to save changes.",
+        "menu_options": {
+          "prices": "Edit prices and time zone",
+          "add_period": "Add an off-peak interval",
+          "edit_period": "Edit an off-peak interval",
+          "remove_period": "Delete an off-peak interval",
+          "finish": "Finish and save"
+        }
+      },
+      "prices": {
+        "title": "Prices and time zone",
+        "data": {
+          "price_hp": "Peak price (EUR/kWh)",
+          "price_hc": "Off-peak price (EUR/kWh)",
+          "export_price": "Solar surplus export price (EUR/kWh)",
+          "timezone": "IANA time zone (e.g. Europe/Paris)"
+        }
+      },
+      "add_period": {
+        "title": "Add off-peak interval",
+        "description": "An interval crossing midnight continues into the following day.",
+        "data": {
+          "start": "Off-peak interval start",
+          "end": "Off-peak interval end",
+          "days": "Interval start weekdays"
+        }
+      },
+      "edit_period": {
+        "title": "Choose an interval to edit",
+        "data": {
+          "period_index": "Interval"
+        }
+      },
+      "change_period": {
+        "title": "Edit off-peak interval",
+        "data": {
+          "start": "Off-peak interval start",
+          "end": "Off-peak interval end",
+          "days": "Interval start weekdays"
+        }
+      },
+      "remove_period": {
+        "title": "Delete off-peak interval",
+        "data": {
+          "period_index": "Interval to remove"
+        }
+      }
+    },
+    "error": {
+      "invalid_price": "Invalid price: enter between 0 and 10 EUR/kWh.",
+      "invalid_timezone": "Unknown IANA time zone.",
+      "invalid_period": "Invalid interval.",
+      "invalid_time": "Invalid time. Use minute precision.",
+      "same_times": "Start and end must differ.",
+      "invalid_days": "Select at least one weekday.",
+      "too_many_periods": "Maximum of 28 rules reached.",
+      "too_many_periods_per_day": "At most 4 intervals may start on a weekday.",
+      "overlapping_period": "Intervals overlap, including across midnight."
+    },
+    "abort": {
+      "single_instance_allowed": "This integration is already configured.",
+      "already_configured": "Already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Edit tariffs"
+      },
+      "schedule": {
+        "title": "Manage tariff intervals",
+        "description": "Selected weekdays refer to the day an interval starts. Choose Finish to save changes.",
+        "menu_options": {
+          "prices": "Edit prices and time zone",
+          "add_period": "Add an off-peak interval",
+          "edit_period": "Edit an off-peak interval",
+          "remove_period": "Delete an off-peak interval",
+          "finish": "Finish and save"
+        }
+      },
+      "prices": {
+        "title": "Prices and time zone",
+        "data": {
+          "price_hp": "Peak price (EUR/kWh)",
+          "price_hc": "Off-peak price (EUR/kWh)",
+          "export_price": "Solar surplus export price (EUR/kWh)",
+          "timezone": "IANA time zone (e.g. Europe/Paris)"
+        }
+      },
+      "add_period": {
+        "title": "Add off-peak interval",
+        "description": "An interval crossing midnight continues into the following day.",
+        "data": {
+          "start": "Off-peak interval start",
+          "end": "Off-peak interval end",
+          "days": "Interval start weekdays"
+        }
+      },
+      "edit_period": {
+        "title": "Choose an interval to edit",
+        "data": {
+          "period_index": "Interval"
+        }
+      },
+      "change_period": {
+        "title": "Edit off-peak interval",
+        "data": {
+          "start": "Off-peak interval start",
+          "end": "Off-peak interval end",
+          "days": "Interval start weekdays"
+        }
+      },
+      "remove_period": {
+        "title": "Delete off-peak interval",
+        "data": {
+          "period_index": "Interval to remove"
+        }
+      }
+    },
+    "error": {
+      "invalid_price": "Invalid price: enter between 0 and 10 EUR/kWh.",
+      "invalid_timezone": "Unknown IANA time zone.",
+      "invalid_period": "Invalid interval.",
+      "invalid_time": "Invalid time. Use minute precision.",
+      "same_times": "Start and end must differ.",
+      "invalid_days": "Select at least one weekday.",
+      "too_many_periods": "Maximum of 28 rules reached.",
+      "too_many_periods_per_day": "At most 4 intervals may start on a weekday.",
+      "overlapping_period": "Intervals overlap, including across midnight."
+    }
+  },
+  "services": {
+    "set_prix_hp": {
+      "name": "Set peak price",
+      "description": "Persist and immediately apply the peak price.",
+      "fields": {
+        "prix": {
+          "name": "Peak price",
+          "description": "Price in EUR/kWh."
+        }
+      }
+    },
+    "set_prix_hc": {
+      "name": "Set off-peak price",
+      "description": "Persist and immediately apply the off-peak price.",
+      "fields": {
+        "prix": {
+          "name": "Off-peak price",
+          "description": "Price in EUR/kWh."
+        }
+      }
+    },
+    "set_mode": {
+      "name": "Set tariff mode",
+      "description": "Automatic, forced peak or forced off-peak; persisted across restarts.",
+      "fields": {
+        "mode": {
+          "name": "Mode",
+          "description": "automatique, hp_force, hc_force"
+        }
+      }
+    }
+  }
+}

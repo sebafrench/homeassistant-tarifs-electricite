@@ -1,0 +1,13 @@
+{
+  "domain": "tarifs_electricite",
+  "name": "Tarifs Électricité HP/HC",
+  "version": "1.0.0",
+  "config_flow": true,
+  "single_config_entry": true,
+  "documentation": "https://github.com/CHANGE_ME/tarifs-electricite-ha#readme",
+  "issue_tracker": "https://github.com/CHANGE_ME/tarifs-electricite-ha/issues",
+  "codeowners": [],
+  "dependencies": [],
+  "requirements": [],
+  "iot_class": "calculated"
+}

@@ -1,0 +1,7 @@
+{
+  "services": {
+    "set_prix_hp": {"service": "mdi:currency-eur"},
+    "set_prix_hc": {"service": "mdi:currency-eur"},
+    "set_mode": {"service": "mdi:swap-horizontal"}
+  }
+}

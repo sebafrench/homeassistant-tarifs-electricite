@@ -1,0 +1,48 @@
+title: Tarifs électricité
+views:
+  - title: Tarifs HP/HC
+    path: tarifs-electricite
+    icon: mdi:transmission-tower
+    cards:
+      - type: entities
+        title: Tarif d'électricité en direct
+        show_header_toggle: false
+        entities:
+          - entity: sensor.tarif_electricite_actuel
+            name: Prix appliqué (EUR/kWh)
+          - entity: sensor.periode_tarifaire
+            name: Période actuelle
+          - entity: sensor.prochain_changement_tarif
+            name: Prochain changement
+          - entity: select.mode_tarifaire
+            name: Mode tarifaire
+      - type: entities
+        title: Prix modifiables
+        show_header_toggle: false
+        entities:
+          - entity: number.tarif_hp
+            name: Prix heures pleines
+          - entity: number.tarif_hc
+            name: Prix heures creuses
+          - entity: number.tarif_revente_surplus
+            name: Revente solaire
+      - type: entities
+        title: Informations complémentaires
+        entities:
+          - sensor.prix_kwh_heures_pleines
+          - sensor.prix_kwh_heures_creuses
+          - sensor.horaires_heures_creuses
+          - sensor.prix_revente_surplus
+      - type: markdown
+        title: Plages horaires programmées
+        content: >
+          **Fuseau :** {{ state_attr('sensor.horaires_heures_creuses', 'fuseau_horaire') or 'non configuré' }}
+
+          {% set plages = state_attr('sensor.horaires_heures_creuses', 'plages') or [] %}
+          {% if plages | length == 0 %}
+          Aucune plage HC définie. Le tarif HP s'applique en automatique.
+          {% else %}
+          {% for plage in plages %}
+          - **{{ plage.jours }}** : {{ plage.debut }} → {{ plage.fin }}{% if plage.traverse_minuit %} (lendemain){% endif %}
+          {% endfor %}
+          {% endif %}

@@ -1,0 +1,41 @@
+set_prix_hp:
+  fields:
+    prix:
+      required: true
+      example: 0.2500
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 0.0001
+          mode: box
+          unit_of_measurement: EUR/kWh
+
+set_prix_hc:
+  fields:
+    prix:
+      required: true
+      example: 0.1900
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 0.0001
+          mode: box
+          unit_of_measurement: EUR/kWh
+
+set_mode:
+  fields:
+    mode:
+      required: true
+      example: automatique
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - label: Automatique
+              value: automatique
+            - label: HP forcé
+              value: hp_force
+            - label: HC forcé
+              value: hc_force

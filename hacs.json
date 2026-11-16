@@ -1,0 +1,6 @@
+{
+  "name": "Tarifs Électricité HP/HC",
+  "render_readme": true,
+  "country": ["FR"],
+  "homeassistant": "2025.1.0"
+}
