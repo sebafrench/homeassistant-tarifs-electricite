@@ -1,8 +1,14 @@
 # Tarifs Électricité HP/HC — Home Assistant
 
+![Icône de l’intégration Tarifs Électricité HP/HC](custom_components/tarifs_electricite/brand/icon.png)
+
 Intégration personnalisée **entièrement locale** pour gérer les tarifs d'électricité en heures pleines (HP) et heures creuses (HC), avec programmation hebdomadaire, mode forcé, interface de configuration et prix pour le tableau de bord Énergie.
 
-> **Version :** 1.0.2 · **Domaine :** `tarifs_electricite` · **Home Assistant :** versions modernes (2025.1+ visées). La suite de tests valide le moteur horaire ; l'intégration complète doit encore être essayée dans une instance Home Assistant réelle.
+> **Version :** 1.0.3 · **Domaine :** `tarifs_electricite` · **Home Assistant :** versions modernes (2025.1+ visées). La suite de tests valide le moteur horaire ; l'intégration complète doit encore être essayée dans une instance Home Assistant réelle.
+
+## Icône intégrée
+
+L’icône HP/HC est incluse directement dans le dépôt sous `custom_components/tarifs_electricite/brand/icon.png` et `icon@2x.png`. Depuis Home Assistant 2026.3, le dossier `brand/` permet à Home Assistant de charger l’icône locale de l’intégration. Après une mise à jour de l’intégration, redémarrez Home Assistant et actualisez le navigateur si nécessaire.
 
 ## Fonctionnalités
 
@@ -41,7 +47,7 @@ Intégration personnalisée **entièrement locale** pour gérer les tarifs d'él
 Depuis **Home Assistant 2026.11**, HACS est intégré à Home Assistant sous le nom **Marketplace**. La structure de publication reste `custom_components/tarifs_electricite/` + `hacs.json`.
 
 1. Créez un dépôt GitHub contenant **les fichiers du ZIP dépôt**, au niveau racine (pas dans un sous-dossier supplémentaire).
-2. Avant publication, remplacez les deux URLs `CHANGE_ME` dans `custom_components/tarifs_electricite/manifest.json` par les véritables URLs de votre dépôt GitHub et de ses issues ; renseignez éventuellement votre pseudo dans `codeowners`.
+2. Les liens de documentation et de remontée des problèmes pointent vers ce dépôt GitHub ; renseignez éventuellement votre pseudo dans `codeowners`.
 3. Publiez le dépôt, puis dans **Paramètres → Marketplace**, ajoutez-le en tant que **dépôt personnalisé**, type **Intégration** (libellés selon version).
 4. Installez-le depuis Marketplace, redémarrez Home Assistant et ajoutez l'intégration dans **Paramètres → Appareils et services**.
 
@@ -193,6 +199,9 @@ Les tests automatisés couvrent prix et validations, plages adjacentes et chevau
 custom_components/tarifs_electricite/
 ├── __init__.py             # runtime, services, horloge native et persistence
 ├── manifest.json
+├── brand/                 # icône locale affichée par Home Assistant
+│   ├── icon.png           # 256 × 256
+│   └── icon@2x.png        # 512 × 512
 ├── const.py
 ├── schedule.py             # calcul pur, horaires, validation, DST
 ├── config_flow.py          # installation et édition de règles par l'UI

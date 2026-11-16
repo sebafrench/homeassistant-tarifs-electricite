@@ -28,4 +28,4 @@ def test_fr_en_translation_keys_and_version():
             assert set(obj[section]["step"]["weekend"]["data"]) == {
                 "saturday_full_day_hc", "sunday_full_day_hc"
             }
-    assert json.loads((INTEGRATION / "manifest.json").read_text())["version"] == "1.0.2"
+    assert json.loads((INTEGRATION / "manifest.json").read_text())["version"] == "1.0.3"
